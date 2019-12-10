@@ -1,0 +1,1 @@
+docker-machine ssh Char mkdir /home/abathur_bind ; docker-machine scp hello.py Char:/home/abathur_bind ; docker run -d --name Abathur -p 3000:3000 -v /home/abathur_bind:/root -w /root python:2-slim /bin/sh -c 'pip install Flask && export FLASK_APP=hello.py && flask run -h 0.0.0.0 -p 3000'
