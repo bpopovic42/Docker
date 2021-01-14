@@ -1,2 +1,22 @@
-#WTF# docker run -d --name lair --link spawning-pool -p 8080:80 -e WORDPRESS_DB_HOST=spawning-pool:3306 -e WORDPRESS_DB_PASSWORD=Kerrigan -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_NAME=zerglings wordpress
-docker run -d --name lair --link spawning-pool:db -p 8080:80 wordpress
+#
+# No need to pass environment variables for Database credentials manually
+# Docker automatically shares proper variables from source container (spawning-pool)
+# to recipient (lair)
+#
+# Link name must be 'mysql' for proper environment variable to be set in order
+# for wordpress to find the database, otherwise it is possible to omit a name
+# for the link by providing wordpress configuration variables manually :
+# docker run -d --name lair --link spawning-pool -p 8080:80 -e WORDPRESS_DB_HOST=spawning-pool:3306 -e WORDPRESS_DB_PASSWORD=Kerrigan -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_NAME=zerglings wordpress
+#
+# NOTE : Docker links are now legacy
+#
+# Further documentation : https://docs.docker.com/network/links/
+#
+# Relevant files and commands :
+#	$> docker inspect -f "{{ .HostConfig.Links }}" lair
+#	$> docker volume inspect hatchery
+#	Under lair container :
+#		$> env
+#		/var/www/html/wp-config.php
+#
+docker run -d --name lair --link spawning-pool:mysql -p 8080:80 wordpress
