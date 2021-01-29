@@ -1,7 +1,7 @@
 # Build with :
-#	$> docker build --build-arg HOST_ADDRESS="$(docker-machine ip master)" -t gitlab .# Run with :
+#	$> docker build --build-arg HOST_ADDRESS="$(docker-machine ip master)" -t gitlab .
 # Run with :
-#	$>docker run -d --restart=on-failure --name gitlab -p 8080:80 -p 8022:22 -p 8443:443 gitlab
+#	$>docker run -d --restart=on-failure --privileged --name gitlab -p 8080:80 -p 8022:22 -p 8443:443 gitlab
 # Follow container execution with :
 #	$> docker logs -f gitlab
 # To push/pull from repository :
@@ -18,8 +18,7 @@ FROM debian
 ARG HOST_ADDRESS
 
 # Install gitlab-ce
-RUN apt-get update && apt-get install -y curl openssh-server ca-certificates perl rsyslog
-RUN service rsyslog start
+RUN apt-get update && apt-get install -y curl openssh-server ca-certificates perl
 RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash
 RUN apt-get install -y gitlab-ce
 
@@ -31,4 +30,4 @@ RUN openssl x509 -req -days 365 -in /etc/gitlab/ssl/${HOST_ADDRESS}.csr -signkey
 RUN rm -v /etc/gitlab/ssl/${HOST_ADDRESS}.csr
 RUN chmod 600 /etc/gitlab/ssl/${HOST_ADDRESS}.*
 
-ENTRYPOINT (/opt/gitlab/embedded/bin/runsvdir-start &) && gitlab-ctl reconfigure && tail -f /dev/null
+ENTRYPOINT (/opt/gitlab/embedded/bin/runsvdir-start &) && gitlab-ctl reconfigure && service ssh restart && tail -f /dev/null
