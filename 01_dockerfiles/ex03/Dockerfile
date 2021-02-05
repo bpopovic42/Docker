@@ -1,5 +1,5 @@
 # Build with :
-#	$> docker build --build-arg HOST_ADDRESS="$(docker-machine ip master)" -t gitlab .
+#	$> docker build --build-arg HOST_ADDRESS="$(docker-machine ip [MACHINE_NAME])" -t gitlab .
 # Run with :
 #	$>docker run -d --restart=on-failure --privileged --name gitlab -p 8080:80 -p 8022:22 -p 8443:443 gitlab
 # Follow container execution with :
