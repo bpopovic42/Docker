@@ -29,6 +29,8 @@ RUN openssl req -nodes -newkey rsa:2048 -keyout etc/gitlab/ssl/${HOST_ADDRESS}.k
 RUN openssl x509 -req -days 365 -in /etc/gitlab/ssl/${HOST_ADDRESS}.csr -signkey /etc/gitlab/ssl/${HOST_ADDRESS}.key -out /etc/gitlab/ssl/${HOST_ADDRESS}.crt
 RUN rm -v /etc/gitlab/ssl/${HOST_ADDRESS}.csr
 RUN chmod 600 /etc/gitlab/ssl/${HOST_ADDRESS}.*
-RUN sed -i "s/# grafana\['enable'\] = true/grafana['enable'] = false/g" /etc/gitlab/gitlab.rb
+
+# Grafana tends to hang the installation process so we disable it
+RUN echo "grafana['enable'] = false" >> /etc/gitlab/gitlab.rb
 
 ENTRYPOINT (/opt/gitlab/embedded/bin/runsvdir-start &) && gitlab-ctl reconfigure && service ssh restart && tail -f /dev/null
