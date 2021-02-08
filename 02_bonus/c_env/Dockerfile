@@ -50,6 +50,7 @@ USER "$DOCKER_USER"
 # Install oh-my-zsh for our user
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+RUN mkdir /home/$DOCKER_USER/devel
 WORKDIR "/home/$DOCKER_USER/devel"
 
 ENTRYPOINT zsh
